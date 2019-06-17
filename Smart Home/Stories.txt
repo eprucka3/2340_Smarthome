@@ -1,4 +1,4 @@
-As a user, I want to be able to see my personal account information so I can confirm data.
+As a user, I want to be able to see my personal account information so I can confirm my personal data.
 
 As a customer, I want to be able to customize my home screen so I can choose which devices and sensors to view.
 
