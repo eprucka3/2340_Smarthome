@@ -47,7 +47,7 @@
 }
 
 div {
-  padding-top: 50px;
+  padding-top: 20px;
 }
 
 .dropbtn:hover, .dropbtn:focus {
@@ -86,8 +86,8 @@ div {
 </head>
 <body>
 
-<button class="btn left">My Account</button>
-<button class="btn right">Floorplan</button>
+<button class="btn left" onclick="location.href='myaccount.html'">My Account</button>
+<button class="btn right" onclick="location.href='floorplan.html'">Floorplan</button>
 
 <button class="btn addDevice" onclick="add()">Add Device</button>
 
@@ -98,6 +98,8 @@ div {
     <a href="#about">Night</a>
   </div>
 </div>
+
+<h1 class="center-div">Home</h1>
 
 <script>
 function add() {
