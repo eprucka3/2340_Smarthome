@@ -19,16 +19,22 @@
 .left {
   position: absolute;
   left: 15px;
-  top-margin: 300px;
+}
+
+.center-div
+{
+     margin: 0 auto;
+     width: 100px;
 }
 
 </style>
 </head>
 <body>
+  <button class="btn left" onclick="location.href='page2.html'">Home</button>
 
-<h2>Account Info</h2>
+<h2 class="center-div">Account Info</h2>
 
-<form>
+<form class="center-div">
   First name:<br>
   <input type="text" name="firstname" >
   <br>
@@ -42,7 +48,6 @@
   <input type="text" name="lastname" placeholder = "admin">
 </form>
 
-  <button class="btn left" onclick="location.href='page2.html'">Home</button>
 
 </body>
 </html>
