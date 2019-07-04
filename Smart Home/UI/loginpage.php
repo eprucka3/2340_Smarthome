@@ -72,7 +72,6 @@
    </head>
 
    <body>
-
       <h1>Welcome to SmartHome</h1>
       <h1>Please Login</h1>
       <div class = "container form-signin">
@@ -89,7 +88,7 @@
                   $_SESSION['timeout'] = time();
                   $_SESSION['username'] = 'admin';
 
-                  header('Location: page2.html');
+                  header('Location: home.html');
                }else {
                   $msg = 'Wrong username or password';
                }

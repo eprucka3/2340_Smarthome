@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+body {
+   padding-top: 40px;
+   padding-bottom: 40px;
+   background-color: #ADABAB;
+}
+
+h1{
+   text-align: center;
+   color: #017572;
+}
+
+.btn {
+  background-color: #017572;
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 20px;
+  margin: 4px 2px;
+  cursor: pointer;
+}
+
+/* Gray */
+.left {
+  position: absolute;
+  left: 15px;
+}
+
+.right {
+  position: absolute;
+  right: 15px;
+  transition: all 500ms ease-in-out;
+}
+
+.right:hover {
+  color: black;
+  transition: all 500ms ease-in-out
+}
+
+.left-div
+{
+     position: relative;
+     left: 100px;
+     width: 100px;
+}
+
+.right-div
+{
+     position: absolute;
+     left: 50%;
+     width: 100px;
+}
+
+.center-div
+{
+     position: relative;
+     margin: auto;
+}
+
+.config
+{
+  position: absolute;
+  top: 50px;
+  left: 15px;
+}
+
+img {
+  display: block;
+  left: 70%;
+  position: relative;
+}
+
+.floorplan {
+  top: 200px;
+}
+
+div {
+  padding-top: 20px;
+}
+
+.dropbtn:hover, .dropbtn:focus {
+  background-color: #2980B9;
+}
+
+.dropdown {
+  display: inline-block;
+    position: absolute;
+    top: 100px;
+    right: 15px;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #f1f1f1;
+  min-width: 160px;
+  overflow: auto;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+}
+
+.dropdown-content a {
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+
+.dropdown a:hover {background-color: #ddd;}
+
+.show {display: block;}
+
+.leftDiv {
+  height: 100vh;
+  position: absolute;
+  left: 5%;
+  top: 20%;
+  width: 20vw;
+}
+
+.rightDiv {
+  position: absolute;
+  left: 50%;
+  top: 20%;
+  width: 20vw;
+}
+
+</style>
+</head>
+<body>
+
+<button class="btn left" onclick="location.href='myaccount.html'">My Account</button>
+
+<button class="btn right" onclick="add()">Add Device</button>
+
+<div class="dropdown">
+  <button onclick="setConfig()" class="btn conifg">Set Configuration</button>
+  <div id="myDropdown" class="dropdown-content">
+    <a href="#Day">Day</a>
+    <a href="#Night">Night</a>
+  </div>
+</div>
+
+<h1 class="center-div">Home</h1>
+
+<div class="leftDiv"></div>
+
+<div class="rightDiv"></div>
+
+</div>
+
+
+<img src="Floorplan.jpg" alt="Floorplan" style="z-index:-10" class="floorplan">
+
+<script>
+
+function add() {
+  var con = document.createElement('div');
+  con.setAttribute("class", "left-div");
+  con.style.width = "200px";
+  con.id = "D" + add.count;
+  var leftDiv = document.getElementsByClassName("leftDiv")[0];
+  leftDiv.appendChild(con);
+
+  var t = document.createElement('div');
+  t.setAttribute("contenteditable", "true");
+  t.innerHTML = "DeviceName";
+  t.style.width = "200px";
+  con.appendChild(t);
+
+  var m = document.createTextNode("D" + add.count);
+  con.appendChild(m);
+
+  var x = document.createElement("INPUT");
+  x.setAttribute("type", "range");
+  con.appendChild(x);
+
+  var y = document.createElement("BUTTON");
+  y.innerHTML = "Delete";
+  y.onclick = function()  {
+    document.body.removeChild(con);
+  }
+  con.appendChild(y);
+
+
+  var img_con = document.createElement('div');
+  img_con.setAttribute("class", "right-div");
+  img_con.style.width = "30px";
+  img_con.style.height = "40px";
+  img_con.id = "I" + add.count;
+  var rightDiv = document.getElementsByClassName("rightDiv")[0];
+  rightDiv.appendChild(img_con);
+
+  var img = document.createElement('IMG');
+  img.setAttribute("src", "sensor-th.png");
+  img.setAttribute("class", "img");
+  img.setAttribute("height", "30");
+  img.setAttribute("width", "30");
+  img_con.appendChild(img);
+
+  var p = document.createTextNode("D" + add.count);
+  img_con.appendChild(p);
+
+
+  dragElement(document.getElementById("I" + add.count));
+
+
+  add.count++;
+}
+
+add.count = 0;
+
+
+  //Show dropdown
+  function setConfig() {
+    //var x = document.getElementsByClassName("center-div").length;
+    //var m = document.createTextNode(x);
+    //document.body.appendChild(m);
+
+    document.getElementById("myDropdown").classList.toggle("show");
+  }
+
+  function dragElement(elmnt) {
+  var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+  if (document.getElementById(elmnt.id + "header")) {
+    /* if present, the header is where you move the DIV from:*/
+    document.getElementById(elmnt.id + "header").onmousedown = dragMouseDown;
+  } else {
+    /* otherwise, move the DIV from anywhere inside the DIV:*/
+    elmnt.onmousedown = dragMouseDown;
+  }
+
+  function dragMouseDown(e) {
+    e = e || window.event;
+    e.preventDefault();
+    // get the mouse cursor position at startup:
+    pos3 = e.clientX;
+    pos4 = e.clientY;
+    document.onmouseup = closeDragElement;
+    // call a function whenever the cursor moves:
+    document.onmousemove = elementDrag;
+  }
+
+  function elementDrag(e) {
+    e = e || window.event;
+    e.preventDefault();
+    // calculate the new cursor position:
+    pos1 = pos3 - e.clientX;
+    pos2 = pos4 - e.clientY;
+    pos3 = e.clientX;
+    pos4 = e.clientY;
+    // set the element's new position:
+    elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+    elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+  }
+
+  function closeDragElement() {
+    /* stop moving when mouse button is released:*/
+    document.onmouseup = null;
+    document.onmousemove = null;
+  }
+}
+
+
+</script>
+
+
+</body>
+</html>
