@@ -11,6 +11,7 @@ body {
 }
 
 h1{
+   position: fixed;
    text-align: center;
    color: #017572;
 }
@@ -90,11 +91,11 @@ h1{
 
 img {
   display: block;
-  position: relative;
 }
 
 .floorplan {
-  top: 150px;
+  position: fixed;
+  top: 200px;
   width: 30vw;
   left: 50%;
 
@@ -110,7 +111,7 @@ div {
 
 .dropdown {
   display: inline-block;
-    position: absolute;
+    position: fixed;
     top: 100px;
     right: 15px;
 }
@@ -204,7 +205,7 @@ xmlhttp.onreadystatechange = function() {
         var jsonData  = JSON.parse(this.responseText);
         for (var i = 0; i < jsonData.length; i++) {
           console.log(jsonData[i].name);
-          add(jsonData[i].name);
+          add(jsonData[i].id, jsonData[i].name, jsonData[i].amount);
         }
         if (jsonData.length > 0) {
           add.count = jsonData[jsonData.length - 1].id;
@@ -214,11 +215,14 @@ xmlhttp.onreadystatechange = function() {
 xmlhttp.open("GET", "returndata.php", true);
 xmlhttp.send();
 
-function add(name) {
-  if (name === undefined) {
+function add(id, name, val) {
+  if (id === undefined) {
+    id = add.count;
+    val = 50;
     name = "D" + add.count;
-    insert(name);
+    insert(id, name, 50);
   }
+
   var con = document.createElement('div');
   con.setAttribute("class", "left-div");
   con.style.width = "200px";
@@ -226,20 +230,21 @@ function add(name) {
   var leftDiv = document.getElementsByClassName("leftDiv")[0];
   leftDiv.appendChild(con);
 
-  var t = document.createElement('div');
-  t.setAttribute("contenteditable", "true");
-  t.innerHTML = "DeviceName";
-  t.style.width = "200px";
-  con.appendChild(t);
-
   var m = document.createTextNode(name);
   con.appendChild(m);
 
   var x = document.createElement("INPUT");
   x.setAttribute("type", "range");
+  x.setAttribute("value", val);
+  x.oninput = function() {
+    var value = x.value;
+    r.nodeValue = value;
+    insert(id, name, value);
+  }
   con.appendChild(x);
 
-
+  var r = document.createTextNode(val);
+  con.appendChild(r);
 
 
   var img_con = document.createElement('div');
@@ -328,11 +333,12 @@ function add(name) {
   }
 }
 
-function insert(val) {
+function insert(d, n, val) {
   $.post("savesettings.php",
   {
-      name: val,
-      amount: add.count
+      id: d,
+      name: n,
+      amount: val
   },
   function(data, status) {// success callback
 						console.log('status: ' + status + ', data: ' + data);

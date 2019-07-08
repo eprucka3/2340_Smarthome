@@ -24,15 +24,16 @@ if (!$db_selected) {
 
   // Attempt create table query execution
   $sql = "CREATE TABLE devices(
-      id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+      id INT NOT NULL PRIMARY KEY,
       name VARCHAR(40) NOT NULL,
-      amount int(11) NOT NULL
+      amount int(11) NOT NULL,
+      pos1 int(11) NOT NULL,
+      pos2 int(11) NOT NULL
   )";
   if(mysqli_query($link, $sql)){
       echo "Table created successfully.";
   } else{
       echo "ERROR: Could not able to execute $sql. " . mysqli_error($link);
-  }
 }
 
 

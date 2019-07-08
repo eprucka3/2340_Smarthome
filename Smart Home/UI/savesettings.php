@@ -9,13 +9,13 @@ if ($conn->connect_error) {     // Check connection
     die("Connection failed: " . $conn->connect_error);
 }
 
-
+$id = mysqli_real_escape_string($conn, $_POST['id']);
 $name = mysqli_real_escape_string($conn, $_POST['name']);
 $amount = mysqli_real_escape_string($conn, $_POST['amount']);
 
 
-$sql = "INSERT INTO devices (name,amount)
-VALUES ('$name', '$amount') ON DUPLICATE KEY UPDATE
+$sql = "INSERT INTO devices (id,name,amount)
+VALUES ('$id', '$name', '$amount') ON DUPLICATE KEY UPDATE
 amount='$amount'";
 
 if ($conn->query($sql) === TRUE) {
