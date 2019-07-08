@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
 body {
@@ -29,17 +30,40 @@ h1{
 
 /* Gray */
 .left {
-  position: absolute;
+  position: fixed;
   left: 15px;
-}
-
-.right {
-  position: absolute;
-  right: 15px;
+  top: 30px;
   transition: all 500ms ease-in-out;
 }
 
+.right {
+  position: fixed;
+  right: 15px;
+  top: 30px;
+  transition: all 500ms ease-in-out;
+}
+
+.save {
+  position: fixed;
+  left: 15px;
+  top: 100px;
+  transition: all 500ms ease-in-out;
+}
+
+.display {
+  position: fixed;
+  left: 15px;
+  top: 170px;
+  transition: all 500ms ease-in-out;
+}
+
+
 .right:hover {
+  color: black;
+  transition: all 500ms ease-in-out
+}
+
+.left:hover {
   color: black;
   transition: all 500ms ease-in-out
 }
@@ -64,21 +88,16 @@ h1{
      margin: auto;
 }
 
-.config
-{
-  position: absolute;
-  top: 50px;
-  left: 15px;
-}
-
 img {
   display: block;
-  left: 70%;
   position: relative;
 }
 
 .floorplan {
-  top: 200px;
+  top: 150px;
+  width: 30vw;
+  left: 50%;
+
 }
 
 div {
@@ -141,7 +160,7 @@ div {
 <button class="btn right" onclick="add()">Add Device</button>
 
 <div class="dropdown">
-  <button onclick="setConfig()" class="btn conifg">Set Configuration</button>
+  <button onclick="setConfig()" class="btn">Set Configuration</button>
   <div id="myDropdown" class="dropdown-content">
     <a href="#Day">Day</a>
     <a href="#Night">Night</a>
@@ -160,12 +179,50 @@ div {
 <img src="Floorplan.jpg" alt="Floorplan" style="z-index:-10" class="floorplan">
 
 <script>
+//Create database if not created
+$.post(
+    "createdatabase.php",
+    function(data, status) {// success callback
+    						console.log('status: ' + status + ', data: ' + data);
+      });
 
-function add() {
+//Retrieve json data
+$.post(
+    "returndata.php",
+      { name: "root" },
+      function(response) {
+
+      }, 'json'
+  );
+
+//Parse json
+var xmlhttp = new XMLHttpRequest();
+
+add.count = 0;
+xmlhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+        var jsonData  = JSON.parse(this.responseText);
+        for (var i = 0; i < jsonData.length; i++) {
+          console.log(jsonData[i].name);
+          add(jsonData[i].name);
+        }
+        if (jsonData.length > 0) {
+          add.count = jsonData[jsonData.length - 1].id;
+        }
+    }
+};
+xmlhttp.open("GET", "returndata.php", true);
+xmlhttp.send();
+
+function add(name) {
+  if (name === undefined) {
+    name = "D" + add.count;
+    insert(name);
+  }
   var con = document.createElement('div');
   con.setAttribute("class", "left-div");
   con.style.width = "200px";
-  con.id = "D" + add.count;
+  con.id = name;
   var leftDiv = document.getElementsByClassName("leftDiv")[0];
   leftDiv.appendChild(con);
 
@@ -175,26 +232,21 @@ function add() {
   t.style.width = "200px";
   con.appendChild(t);
 
-  var m = document.createTextNode("D" + add.count);
+  var m = document.createTextNode(name);
   con.appendChild(m);
 
   var x = document.createElement("INPUT");
   x.setAttribute("type", "range");
   con.appendChild(x);
 
-  var y = document.createElement("BUTTON");
-  y.innerHTML = "Delete";
-  y.onclick = function()  {
-    document.body.removeChild(con);
-  }
-  con.appendChild(y);
+
 
 
   var img_con = document.createElement('div');
   img_con.setAttribute("class", "right-div");
   img_con.style.width = "30px";
   img_con.style.height = "40px";
-  img_con.id = "I" + add.count;
+  img_con.id = "I" + name;
   var rightDiv = document.getElementsByClassName("rightDiv")[0];
   rightDiv.appendChild(img_con);
 
@@ -205,17 +257,25 @@ function add() {
   img.setAttribute("width", "30");
   img_con.appendChild(img);
 
-  var p = document.createTextNode("D" + add.count);
+  var p = document.createTextNode(name);
   img_con.appendChild(p);
 
 
-  dragElement(document.getElementById("I" + add.count));
+  dragElement(document.getElementById("I" + name));
+
+  var y = document.createElement("BUTTON");
+  y.innerHTML = "Delete";
+  y.onclick = function()  {
+    con.remove();
+    img_con.remove();
+    remove(name);
+  }
+  con.appendChild(y);
 
 
   add.count++;
 }
 
-add.count = 0;
 
 
   //Show dropdown
@@ -266,6 +326,27 @@ add.count = 0;
     document.onmouseup = null;
     document.onmousemove = null;
   }
+}
+
+function insert(val) {
+  $.post("savesettings.php",
+  {
+      name: val,
+      amount: add.count
+  },
+  function(data, status) {// success callback
+						console.log('status: ' + status + ', data: ' + data);
+  });
+}
+
+function remove(val) {
+  $.post("remove.php",
+  {
+      name: val,
+  },
+  function(data, status) {// success callback
+						console.log('status: ' + status + ', data: ' + data);
+  });
 }
 
 
