@@ -27,7 +27,9 @@ if (!$db_selected) {
   $sql = "CREATE TABLE IF NOT EXISTS devices(
       id INT NOT NULL PRIMARY KEY,
       name VARCHAR(40) NOT NULL,
-      amount int(11) NOT NULL,
+      amountDay int(11) NOT NULL,
+      amountNight int(11) NOT NULL,
+      amountAway int(11) NOT NULL,
       pos1 int(11) NOT NULL,
       pos2 int(11) NOT NULL
   )";

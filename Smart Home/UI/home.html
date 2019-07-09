@@ -16,8 +16,23 @@ h1{
    color: #017572;
 }
 
+h3{
+  position: relative;
+  text-align: center;
+  margin-top: 0;
+  color: white;
+  font-size: 20px;
+  font-weight: normal;
+  font-family: "Times New Roman", Times, serif;
+}
+
+.rad_txt{
+  color: #017572;
+}
+
 .btn {
   background-color: #017572;
+  font-family: "Times New Roman", Times, serif;
   border: none;
   color: white;
   padding: 15px 32px;
@@ -47,6 +62,13 @@ h1{
 .logout {
   position: fixed;
   left: 15px;
+  top: 100px;
+  transition: all 500ms ease-in-out;
+}
+
+.config {
+  position: fixed;
+  right: 15px;
   top: 100px;
   transition: all 500ms ease-in-out;
 }
@@ -116,32 +138,6 @@ div {
   background-color: #2980B9;
 }
 
-.dropdown {
-  display: inline-block;
-    position: fixed;
-    top: 80px;
-    right: 15px;
-}
-
-.dropdown-content {
-  display: none;
-  position: absolute;
-  background-color: #f1f1f1;
-  min-width: 160px;
-  overflow: auto;
-  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-  z-index: 1;
-}
-
-.dropdown-content a {
-  color: black;
-  padding: 12px 16px;
-  text-decoration: none;
-  display: block;
-}
-
-.dropdown a:hover {background-color: #ddd;}
-
 .show {display: block;}
 
 .leftDiv {
@@ -159,6 +155,81 @@ div {
   width: 20vw;
 }
 
+.right_container {
+  position: fixed;
+  width: 200px;
+  right: 15px;
+  top: 100px;
+  height: 140px;
+  background-color: #017572;
+}
+
+/* The container */
+.container {
+  display: block;
+  position: relative;
+  padding-left: 40px;
+  font-family: "Times New Roman", Times, serif;
+  margin-bottom: 12px;
+  cursor: pointer;
+  color: white;
+  font-size: 16px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* Hide the browser's default radio button */
+.container input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+}
+
+/* Create a custom radio button */
+.checkmark {
+  position: absolute;
+  top: 0;
+  left: 5px;
+  height: 25px;
+  width: 25px;
+  background-color: #eee;
+  border-radius: 50%;
+}
+
+/* On mouse-over, add a grey background color */
+.container:hover input ~ .checkmark {
+  background-color: #ccc;
+}
+
+/* When the radio button is checked, add a blue background */
+.container input:checked ~ .checkmark {
+  background-color: black;
+}
+
+/* Create the indicator (the dot/circle - hidden when not checked) */
+.checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+/* Show the indicator (dot/circle) when checked */
+.container input:checked ~ .checkmark:after {
+  display: block;
+}
+
+/* Style the indicator (dot/circle) */
+.container .checkmark:after {
+ 	top: 9px;
+	left: 9px;
+	width: 8px;
+	height: 8px;
+	border-radius: 50%;
+	background: white;
+}
+
 </style>
 </head>
 <body>
@@ -169,13 +240,6 @@ div {
 
 <button class="btn logout" onclick="location.href='loginpage.php'">Sign Out</button>
 
-<div class="dropdown">
-  <button onclick="setConfig()" class="btn">Set Configuration</button>
-  <div id="myDropdown" class="dropdown-content">
-    <a>Day</a>
-    <a>Night</a>
-  </div>
-</div>
 
 <h1 class="center-div">Home</h1>
 
@@ -183,6 +247,22 @@ div {
 
 <div class="rightDiv"></div>
 
+
+<div class="right_container">
+<h3>Configuration:</h3>
+<label class="container">Day
+  <input type="radio" name="radio" onclick="day()" id="cDay">
+  <span class="checkmark"></span>
+</label>
+<label class="container">Night
+  <input type="radio" name="radio" onclick="night()" id="cNight">
+  <span class="checkmark"></span>
+</label>
+<label class="container">Away
+  <input type="radio" name="radio" onclick="away()" id="cAway">
+  <span class="checkmark"></span>
+</label>
+</div>
 </div>
 
 
@@ -214,8 +294,9 @@ xmlhttp.onreadystatechange = function() {
         var jsonData  = JSON.parse(this.responseText);
         for (var i = 0; i < jsonData.length; i++) {
           console.log(jsonData[i].name);
-          add(jsonData[i].id, jsonData[i].name, jsonData[i].amount,
-              jsonData[i].pos1, jsonData[i].pos2);
+          add(jsonData[i].id, jsonData[i].name, jsonData[i].amountDay,
+              jsonData[i].amountNight, jsonData[i].amountAway,
+               jsonData[i].pos1, jsonData[i].pos2);
         }
         if (jsonData.length > 0) {
           add.count = jsonData[jsonData.length - 1].id;
@@ -225,15 +306,29 @@ xmlhttp.onreadystatechange = function() {
 xmlhttp.open("GET", "returndata.php", true);
 xmlhttp.send();
 
-function add(id, name, val, pos1, pos2) {
+//Check config
+   var configVal = localStorage.getItem("config");
+   var ele;
+   if (configVal == "night") {
+      ele = document.getElementById("cNight");
+  } else if (configVal == "away") {
+      ele = document.getElementById("cAway");
+  }  else {
+      ele = document.getElementById("cDay");
+  }
+    ele.setAttribute("checked", "checked");
+
+function add(id, name, valDay, valNight, valAway, pos1, pos2) {
   add.count++;
   if (id === undefined) {
     id = add.count;
-    val = 50;
+    valDay = 50;
+    valNight = 50;
+    valAway = 50;
     pos1 = 0;
     pos2 = 0;
     name = "D" + add.count;
-    insert(id, name, val, pos1, pos2);
+    insert(id, name, valDay, valNight, valAway, pos1, pos2);
   }
 
   var con = document.createElement('div');
@@ -248,16 +343,34 @@ function add(id, name, val, pos1, pos2) {
 
   var x = document.createElement("INPUT");
   x.setAttribute("type", "range");
-  x.setAttribute("value", val);
+  if (localStorage.getItem("config") == "night") {
+      x.setAttribute("value", valNight);
+  } else if (localStorage.getItem("config") == "away") {
+      x.setAttribute("value", valAway);
+  } else {
+    x.setAttribute("value", valDay);
+  }
   x.setAttribute("class", "slider");
   x.oninput = function() {
-    var value = x.value;
-    r.nodeValue = value;
-    insert(id, name, value, pos1, pos2);
+    if (localStorage.getItem("config") == "night") {
+        valNight = x.value;
+    } else if (localStorage.getItem("config") == "away") {
+        valAway = x.value;
+    } else {
+      valDay = x.value;
+    }
+    r.nodeValue = x.value;
+    insert(id, name, valDay, valNight, valAway, pos1, pos2);
   }
   con.appendChild(x);
 
-  var r = document.createTextNode(val);
+  if (localStorage.getItem("config") == "night") {
+      var r = document.createTextNode(valNight);
+  } else if (localStorage.getItem("config") == "away") {
+    var r = document.createTextNode(valAway);
+  } else {
+    var r = document.createTextNode(valDay);
+  }
   con.appendChild(r);
 
 
@@ -283,7 +396,7 @@ function add(id, name, val, pos1, pos2) {
   img_el = document.getElementById(img_id);
   img_el.style.top = (pos1) + "px";
   img_el.style.left = (pos2) + "px";
-  dragElement(img_el, id, name, val);
+  dragElement(img_el, id, name, valDay, valNight, valAway);
 
   var y = document.createElement("BUTTON");
   y.innerHTML = "Delete";
@@ -295,21 +408,9 @@ function add(id, name, val, pos1, pos2) {
   con.appendChild(y);
 }
 
-
-  //Show dropdown
-  function setConfig() {
-    document.getElementById("myDropdown").classList.toggle("show");
-  }
-
-  function dragElement(elmnt, id, name, val) {
+  function dragElement(elmnt, id, name, valDay, valNight, valAway) {
     var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
-    if (document.getElementById(elmnt.id + "header")) {
-      /* if present, the header is where you move the DIV from:*/
-      document.getElementById(elmnt.id + "header").onmousedown = dragMouseDown;
-    } else {
-      /* otherwise, move the DIV from anywhere inside the DIV:*/
-      elmnt.onmousedown = dragMouseDown;
-    }
+    elmnt.onmousedown = dragMouseDown;
 
     function dragMouseDown(e) {
       e = e || window.event;
@@ -342,16 +443,18 @@ function add(id, name, val, pos1, pos2) {
       var rect = elmnt.getBoundingClientRect();
       var rightDiv = document.getElementsByClassName("rightDiv")[0];
       var divRect = rightDiv.getBoundingClientRect();
-      insert(id, name, val, rect.top - divRect.top, rect.left - divRect.left);
+      insert(id, name, valDay, valNight, valAway, rect.top - divRect.top, rect.left - divRect.left);
     }
 }
 
-function insert(d, n, val, p1, p2) {
+function insert(d, n, valDay, valNight, valAway, p1, p2) {
   $.post("savesettings.php",
   {
       id: d,
       name: n,
-      amount: val,
+      amountDay: valDay,
+      amountNight: valNight,
+      amountAway: valAway,
       pos1: p1,
       pos2: p2,
   },
@@ -370,6 +473,18 @@ function remove(val) {
   });
 }
 
+  function day() {
+    localStorage.setItem("config", "day");
+    location.reload();
+  }
+  function night() {
+    localStorage.setItem("config", "night");
+    location.reload();
+  }
+  function away() {
+    localStorage.setItem("config", "away");
+    location.reload();
+  }
 
 </script>
 

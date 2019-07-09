@@ -11,14 +11,17 @@ if ($conn->connect_error) {     // Check connection
 
 $id = mysqli_real_escape_string($conn, $_POST['id']);
 $name = mysqli_real_escape_string($conn, $_POST['name']);
-$amount = mysqli_real_escape_string($conn, $_POST['amount']);
+$amountDay = mysqli_real_escape_string($conn, $_POST['amountDay']);
+$amountNight = mysqli_real_escape_string($conn, $_POST['amountNight']);
+$amountAway = mysqli_real_escape_string($conn, $_POST['amountAway']);
 $pos1 = mysqli_real_escape_string($conn, $_POST['pos1']);
 $pos2 = mysqli_real_escape_string($conn, $_POST['pos2']);
 
 
-$sql = "INSERT INTO devices (id,name,amount,pos1,pos2)
-VALUES ('$id', '$name', '$amount', '$pos1', '$pos2') ON DUPLICATE KEY UPDATE
-amount='$amount', pos1='$pos1', pos2='$pos2'";
+$sql = "INSERT INTO devices (id,name,amountDay,amountNight,amountAway,pos1,pos2)
+VALUES ('$id', '$name', '$amountDay','$amountNight','$amountAway','$pos1', '$pos2')
+ON DUPLICATE KEY UPDATE amountDay='$amountDay', amountNight='$amountNight',
+amountAway='$amountAway',pos1='$pos1', pos2='$pos2'";
 
 if ($conn->query($sql) === TRUE) {
     echo "Page saved!";
