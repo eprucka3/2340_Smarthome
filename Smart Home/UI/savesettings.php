@@ -18,10 +18,22 @@ $pos1 = mysqli_real_escape_string($conn, $_POST['pos1']);
 $pos2 = mysqli_real_escape_string($conn, $_POST['pos2']);
 
 
-$sql = "INSERT INTO devices (id,name,amountDay,amountNight,amountAway,pos1,pos2)
-VALUES ('$id', '$name', '$amountDay','$amountNight','$amountAway','$pos1', '$pos2')
-ON DUPLICATE KEY UPDATE amountDay='$amountDay', amountNight='$amountNight',
-amountAway='$amountAway',pos1='$pos1', pos2='$pos2'";
+if ($pos1 == null) {
+  $sql = "INSERT INTO devices (id,name,amountDay,amountNight,amountAway)
+  VALUES ('$id', '$name', '$amountDay','$amountNight','$amountAway')
+  ON DUPLICATE KEY UPDATE name='$name', amountDay='$amountDay', amountNight='$amountNight',
+  amountAway='$amountAway'";
+} else if ($amountDay == null) {
+  $sql = "INSERT INTO devices (id,pos1,pos2)
+  VALUES ('$id','$pos1', '$pos2')
+  ON DUPLICATE KEY UPDATE
+  pos1='$pos1', pos2='$pos2'";
+} else {
+  $sql = "INSERT INTO devices (id,name,amountDay,amountNight,amountAway,pos1,pos2)
+  VALUES ('$id', '$name', '$amountDay','$amountNight','$amountAway','$pos1', '$pos2')
+  ON DUPLICATE KEY UPDATE name='$name', amountDay='$amountDay', amountNight='$amountNight',
+  amountAway='$amountAway',pos1='$pos1', pos2='$pos2'";
+}
 
 if ($conn->query($sql) === TRUE) {
     echo "Page saved!";

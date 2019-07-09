@@ -104,11 +104,13 @@ h3{
 {
      position: relative;
      left: 10vw;
-     width: 100px;
+     width: 90px;
      background-color: #191919;
      border-style: solid;
      padding-bottom: 10px;
      padding-left: 10px;
+     padding-right: 10px;
+     padding-top: 10px;
 }
 
 .right-div
@@ -343,13 +345,24 @@ function add(id, name, valDay, valNight, valAway, pos1, pos2) {
   var con = document.createElement('div');
   con.setAttribute("class", "left-div");
   con.style.width = "200px";
-  con.id = name;
+  con.id = "D" + id;
   var leftDiv = document.getElementsByClassName("leftDiv")[0];
   leftDiv.appendChild(con);
 
   con.style.color = "white";
-  var m = document.createTextNode(name);
+  var m = document.createElement("INPUT");
+  m.setAttribute("type", "text");
+  m.setAttribute("value", name);
   con.appendChild(m);
+
+  var t = document.createElement("BUTTON");
+  t.innerHTML = "OK";
+  t.onclick = function()  {
+    name = m.value;
+    insert(id, name, valDay, valNight, valAway, null, null);
+    location.reload();
+  }
+  con.appendChild(t);
 
   var x = document.createElement("INPUT");
   x.setAttribute("type", "range");
@@ -369,17 +382,17 @@ function add(id, name, valDay, valNight, valAway, pos1, pos2) {
     } else {
       valDay = x.value;
     }
-    r.nodeValue = x.value;
-    insert(id, name, valDay, valNight, valAway, pos1, pos2);
+    r.nodeValue = "    " + x.value + "   ";
+    insert(id, name, valDay, valNight, valAway);
   }
   con.appendChild(x);
 
   if (localStorage.getItem("config") == "night") {
-      var r = document.createTextNode(valNight);
+      var r = document.createTextNode("    " + valNight + "   ");
   } else if (localStorage.getItem("config") == "away") {
-    var r = document.createTextNode(valAway);
+    var r = document.createTextNode("    " + valAway + "   ");
   } else {
-    var r = document.createTextNode(valDay);
+    var r = document.createTextNode("    " + valDay + "   ");
   }
   con.appendChild(r);
 
@@ -388,7 +401,7 @@ function add(id, name, valDay, valNight, valAway, pos1, pos2) {
   img_con.setAttribute("class", "right-div");
   img_con.style.width = "30px";
   img_con.style.height = "40px";
-  var img_id = "I" + name;
+  var img_id = "I" + id;
   img_con.id = img_id;
   var rightDiv = document.getElementsByClassName("rightDiv")[0];
   rightDiv.appendChild(img_con);
@@ -413,12 +426,12 @@ function add(id, name, valDay, valNight, valAway, pos1, pos2) {
   y.onclick = function()  {
     con.remove();
     img_con.remove();
-    remove(name);
+    remove(id);
   }
   con.appendChild(y);
 }
 
-  function dragElement(elmnt, id, name, valDay, valNight, valAway) {
+  function dragElement(elmnt, id) {
     var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
     elmnt.onmousedown = dragMouseDown;
 
@@ -453,7 +466,7 @@ function add(id, name, valDay, valNight, valAway, pos1, pos2) {
       var rect = elmnt.getBoundingClientRect();
       var rightDiv = document.getElementsByClassName("rightDiv")[0];
       var divRect = rightDiv.getBoundingClientRect();
-      insert(id, name, valDay, valNight, valAway, rect.top - divRect.top, rect.left - divRect.left);
+      insert(id, null, null, null, null, rect.top - divRect.top, rect.left - divRect.left);
     }
 }
 

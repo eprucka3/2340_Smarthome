@@ -11,7 +11,7 @@ if ($conn->connect_error) {     // Check connection
 
 $name = mysqli_real_escape_string($conn, $_POST['name']);
 
-$sql = "DELETE from devices WHERE name='$name'";
+$sql = "DELETE from devices WHERE id='$name'";
 
 if ($conn->query($sql) === TRUE) {
     echo "Deleted!";
