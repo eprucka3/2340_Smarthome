@@ -21,7 +21,6 @@
             max-width: 330px;
             padding: 15px;
             margin: 0 auto;
-            color: #017572;
          }
 
          .form-signin .form-signin-heading,
@@ -36,9 +35,6 @@
          .form-signin .form-control {
             position: relative;
             height: auto;
-            -webkit-box-sizing: border-box;
-            -moz-box-sizing: border-box;
-            box-sizing: border-box;
             padding: 10px;
             font-size: 16px;
          }
@@ -47,18 +43,18 @@
             z-index: 2;
          }
 
-         .form-signin input[type="email"] {
+         .form-signin input[type="username"] {
             margin-bottom: -1px;
             border-bottom-right-radius: 0;
             border-bottom-left-radius: 0;
-            border-color:#017572;
+            border-color:#191919;
          }
 
          .form-signin input[type="password"] {
             margin-bottom: 10px;
             border-top-left-radius: 0;
             border-top-right-radius: 0;
-            border-color:#017572;
+            border-color:#191919;
          }
 
          h1{
@@ -111,7 +107,7 @@
             action = "<?php echo htmlspecialchars($_SERVER['PHP_SELF']);
             ?>" method = "post">
             <h4 class = "form-signin-heading"><?php echo $msg; ?></h4>
-            <input type = "text" class = "form-control"
+            <input type = "username" class = "form-control"
                name = "username" id = "username"
                required autofocus></br>
             <input type = "password" class = "form-control" id = "password"

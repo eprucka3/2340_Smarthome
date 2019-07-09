@@ -14,6 +14,7 @@ h1{
    position: fixed;
    text-align: center;
    color: #017572;
+   font-size: 40px;
 }
 
 h3{
@@ -33,7 +34,8 @@ h3{
 .btn {
   background-color: #017572;
   font-family: "Times New Roman", Times, serif;
-  border: none;
+  border-style: solid;
+  border-color: #191919;
   color: white;
   padding: 15px 32px;
   text-align: center;
@@ -101,8 +103,12 @@ h3{
 .left-div
 {
      position: relative;
-     left: 100px;
+     left: 10vw;
      width: 100px;
+     background-color: #191919;
+     border-style: solid;
+     padding-bottom: 10px;
+     padding-left: 10px;
 }
 
 .right-div
@@ -124,9 +130,9 @@ img {
 
 .floorplan {
   position: relative;
-  top: 200px;
-  width: 30vw;
-  left: 50%;
+  top: 75px;
+  width: 40vw;
+  left: 35%;
 
 }
 
@@ -155,6 +161,7 @@ div {
   width: 20vw;
 }
 
+
 .right_container {
   position: fixed;
   width: 200px;
@@ -162,6 +169,8 @@ div {
   top: 100px;
   height: 140px;
   background-color: #017572;
+  border-style: solid;
+  border-color: #191919;
 }
 
 /* The container */
@@ -241,7 +250,7 @@ div {
 <button class="btn logout" onclick="location.href='loginpage.php'">Sign Out</button>
 
 
-<h1 class="center-div">Home</h1>
+<h1 class="center-div">Your Devices</h1>
 
 <div class="leftDiv"></div>
 
@@ -266,7 +275,7 @@ div {
 </div>
 
 
-<img src="Floorplan.jpg" alt="Floorplan" style="z-index:-10" class="floorplan">
+<img src="floorplan.png" alt="Floorplan" style="z-index:-10" class="floorplan">
 
 <script>
 //Create database if not created
@@ -338,6 +347,7 @@ function add(id, name, valDay, valNight, valAway, pos1, pos2) {
   var leftDiv = document.getElementsByClassName("leftDiv")[0];
   leftDiv.appendChild(con);
 
+  con.style.color = "white";
   var m = document.createTextNode(name);
   con.appendChild(m);
 
