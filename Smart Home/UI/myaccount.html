@@ -115,6 +115,21 @@ $.post(
     var pass = document.getElementById("password").value.toString();
     var first = document.getElementById("firstname").value.toString();
     var last = document.getElementById("lastname").value.toString();
+    if (user == "") {
+      user = username;
+    }
+    if (pass == "") {
+      pass = password;
+    }
+    if (first == "") {
+      first = firstname;
+    }
+    if (last == "") {
+      last = lastname;
+    }
+    if (user == "") {
+      user == username;
+    }
     $.post("saveUser.php",
     {
       us: user,
