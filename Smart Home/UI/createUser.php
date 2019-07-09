@@ -24,18 +24,28 @@ if (!$db_selected) {
   $link = mysqli_connect("localhost", "root", "", "mydb");
 
   // Attempt create table query execution
-  $sql = "CREATE TABLE IF NOT EXISTS devices(
+  $sql = "CREATE TABLE IF NOT EXISTS user(
       id INT NOT NULL PRIMARY KEY,
-      name VARCHAR(40) NOT NULL,
-      amount int(11) NOT NULL,
-      pos1 int(11) NOT NULL,
-      pos2 int(11) NOT NULL
+      username VARCHAR(40) NOT NULL,
+      password VARCHAR(40) NOT NULL,
+      firstname VARCHAR(40) NOT NULL,
+      lastname VARCHAR(40) NOT NULL
   )";
   if(mysqli_query($link, $sql)){
       echo "Table created successfully.";
   } else{
       echo "ERROR: Could not able to execute $sql. " . mysqli_error($link);
 
+}
+
+$sql = "INSERT INTO user (id,username,password,firstname,lastname)
+VALUES ('0', 'admin', 'admin', 'firstname', 'lastname')
+ON DUPLICATE KEY UPDATE id=id";
+
+if ($link->query($sql) === TRUE) {
+    echo "Page saved!";
+} else {
+    echo "Error: " . $sql . "<br>" . $link->error;
 }
 
 

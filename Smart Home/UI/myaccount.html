@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <style>
   body {
      padding-top: 40px;
@@ -50,20 +51,84 @@
 
 <h1 class="center-div">Account Info</h1>
 
+
 <form class="center-div">
   First name:<br>
-  <input type="text" name="firstname" >
+  <input type="text" name="firstname" id = "firstname">
   <br>
   Last name:<br>
-  <input type="text" name="lastname">
+  <input type="text" name="lastname" id = "lastname">
   <br>
   Username:<br>
-  <input type="text" name="firstname" placeholder = "admin" >
+  <input type="text" name="username" id = "username">
   <br>
   Password:<br>
-  <input type="text" name="lastname" placeholder = "admin">
+  <input type="text" name="password" id = "password">
+  <input type="submit" value = "Save" name="formSubmit" onclick="updateUser()">
 </form>
 
+<script>
+//Create database if not created
+$.post(
+    "createUser.php",
+    function(data, status) {// success callback
+                console.log('status: ' + status + ', data: ' + data);
+      });
+
+//Retrieve json data
+$.post(
+    "readUser.php",
+      { name: "root" },
+      function(response) {
+
+      }, 'json'
+  );
+
+  //Parse json
+  var xmlhttp = new XMLHttpRequest();
+  username;
+  password;
+  firstname;
+  lastname;
+  xmlhttp.onreadystatechange = function() {
+      if (this.readyState == 4 && this.status == 200) {
+          var jsonData  = JSON.parse(this.responseText);
+            username = jsonData[0].username;
+            password = jsonData[0].password;
+            firstname = jsonData[0].firstname;
+            lastname = jsonData[0].lastname;
+            setPlaceholders(username, password, firstname, lastname);
+      }
+  };
+  xmlhttp.open("GET", "readUser.php", true);
+  xmlhttp.send();
+
+  function setPlaceholders(username, password, firstname, lastname) {
+    document.getElementById("firstname").placeholder = firstname;
+    document.getElementById("lastname").placeholder = lastname;
+    document.getElementById("username").placeholder = username;
+    document.getElementById("password").placeholder = password;
+}
+
+  function updateUser() {
+    var user = document.getElementById("username").value.toString();
+    var pass = document.getElementById("password").value.toString();
+    var first = document.getElementById("firstname").value.toString();
+    var last = document.getElementById("lastname").value.toString();
+    $.post("saveUser.php",
+    {
+      us: user,
+      pa: pass,
+      fn: first,
+      ln: last,
+    },
+    function(data, status) {// success callback
+              console.log('status: ' + status + ', data: ' + data);
+    });
+
+}
+</script>
 
 </body>
+
 </html>

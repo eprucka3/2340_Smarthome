@@ -7,6 +7,8 @@
 <html lang = "en">
 
    <head>
+     <script src="http://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
 
       <style>
          body {
@@ -74,15 +76,26 @@
 
          <?php
             $msg = '';
+            $mysqli = new mysqli("localhost", "root", "", "mydb");
+            $query = "SELECT username FROM user";
+            $result = mysqli_query($mysqli, $query);
+            $username = mysqli_fetch_all ($result, MYSQLI_ASSOC)[0];
+            $username = implode( ',', $username);
+
+            $query = "SELECT password FROM user";
+            $result = mysqli_query($mysqli, $query);
+            $password = mysqli_fetch_all ($result, MYSQLI_ASSOC)[0];
+            $password = implode( ',', $password);
+
+            $mysqli->close();
 
             if (isset($_POST['login']) && !empty($_POST['username'])
                && !empty($_POST['password'])) {
 
-               if ($_POST['username'] == 'admin' &&
-                  $_POST['password'] == 'admin') {
+               if ($_POST['username'] == $username &&
+                  $_POST['password'] == $password) {
                   $_SESSION['valid'] = true;
                   $_SESSION['timeout'] = time();
-                  $_SESSION['username'] = 'admin';
 
                   header('Location: home.html');
                }else {
@@ -99,15 +112,54 @@
             ?>" method = "post">
             <h4 class = "form-signin-heading"><?php echo $msg; ?></h4>
             <input type = "text" class = "form-control"
-               name = "username" placeholder = "username = admin"
+               name = "username" id = "username"
                required autofocus></br>
-            <input type = "password" class = "form-control"
-               name = "password" placeholder = "password = admin" required>
+            <input type = "password" class = "form-control" id = "password"
+               name = "password" placeholder = "password" required>
             <button class = "btn btn-lg btn-primary btn-block" type = "submit"
                name = "login">Login</button>
          </form>
 
       </div>
+
+      <script>
+      //Create database if not created
+      $.post(
+          "createUser.php",
+          function(data, status) {// success callback
+          						console.log('status: ' + status + ', data: ' + data);
+            });
+
+            //Retrieve json data
+            $.post(
+                "readUser.php",
+                  { name: "root" },
+                  function(response) {
+
+                  }, 'json'
+              );
+
+              //Parse json
+              var xmlhttp = new XMLHttpRequest();
+              username;
+              password;
+              xmlhttp.onreadystatechange = function() {
+                  if (this.readyState == 4 && this.status == 200) {
+                      var jsonData  = JSON.parse(this.responseText);
+                        username = jsonData[0].username;
+                        password = jsonData[0].password;
+                        setPlaceholders(username, password);
+                  }
+              };
+              xmlhttp.open("GET", "readUser.php", true);
+              xmlhttp.send();
+
+              function setPlaceholders(username, password, firstname, lastname) {
+                document.getElementById("username").placeholder = "Username = " + username;
+                document.getElementById("password").placeholder = "Password = " + password;
+            }
+
+      </script>
 
    </body>
 </html>

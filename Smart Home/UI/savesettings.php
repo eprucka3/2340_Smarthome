@@ -12,11 +12,13 @@ if ($conn->connect_error) {     // Check connection
 $id = mysqli_real_escape_string($conn, $_POST['id']);
 $name = mysqli_real_escape_string($conn, $_POST['name']);
 $amount = mysqli_real_escape_string($conn, $_POST['amount']);
+$pos1 = mysqli_real_escape_string($conn, $_POST['pos1']);
+$pos2 = mysqli_real_escape_string($conn, $_POST['pos2']);
 
 
-$sql = "INSERT INTO devices (id,name,amount)
-VALUES ('$id', '$name', '$amount') ON DUPLICATE KEY UPDATE
-amount='$amount'";
+$sql = "INSERT INTO devices (id,name,amount,pos1,pos2)
+VALUES ('$id', '$name', '$amount', '$pos1', '$pos2') ON DUPLICATE KEY UPDATE
+amount='$amount', pos1='$pos1', pos2='$pos2'";
 
 if ($conn->query($sql) === TRUE) {
     echo "Page saved!";
