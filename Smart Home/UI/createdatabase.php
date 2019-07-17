@@ -30,6 +30,7 @@ if (!$db_selected) {
       amountDay int(11) NOT NULL,
       amountNight int(11) NOT NULL,
       amountAway int(11) NOT NULL,
+      type VARCHAR(40) NOT NULL,
       pos1 int(11) NOT NULL,
       pos2 int(11) NOT NULL
   )";

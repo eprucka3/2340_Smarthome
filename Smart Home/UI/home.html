@@ -142,10 +142,6 @@ div {
   padding-top: 20px;
 }
 
-.dropbtn:hover, .dropbtn:focus {
-  background-color: #2980B9;
-}
-
 .show {display: block;}
 
 .leftDiv {
@@ -241,13 +237,66 @@ div {
 	background: white;
 }
 
+.dropbtn {
+  background-color: #017572;
+  color: white;
+  padding: 16px;
+  font-size: 16px;
+  border-style: solid;
+  border-color: black;
+  cursor: pointer;
+    position: fixed;
+  right: 15px;
+  top: 30px;
+  transition: all 500ms ease-in-out;
+}
+
+
+
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #f1f1f1;
+  min-width: 160px;
+  overflow: auto;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+    position: fixed;
+  right: 15px;
+  top: 80px;
+  transition: all 500ms ease-in-out;
+}
+
+.dropdown-content a {
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+
+.dropdown a:hover {background-color: #ddd;}
+
+.show {display: block;}
+
 </style>
 </head>
 <body>
 
 <button class="btn left" onclick="location.href='myaccount.html'">My Account</button>
 
-<button class="btn right" onclick="add()">Add Device</button>
+<div class="dropdown">
+  <button onclick="myFunction()" class="dropbtn">Dropdown</button>
+  <div id="myDropdown" class="dropdown-content">
+    <a onclick="addLight()">Light</a>
+    <a onclick="addCurtain()">Curtain</a>
+    <a onclick="addThermostat()">Thermostat</a>
+  </div>
+</div>
 
 <button class="btn logout" onclick="location.href='loginpage.php'">Sign Out</button>
 
@@ -305,9 +354,10 @@ xmlhttp.onreadystatechange = function() {
         var jsonData  = JSON.parse(this.responseText);
         for (var i = 0; i < jsonData.length; i++) {
           console.log(jsonData[i].name);
-          add(jsonData[i].id, jsonData[i].name, jsonData[i].amountDay,
+          add(jsonData[i].type, jsonData[i].id, jsonData[i].name,
+            jsonData[i].amountDay,
               jsonData[i].amountNight, jsonData[i].amountAway,
-               jsonData[i].pos1, jsonData[i].pos2);
+             jsonData[i].pos1, jsonData[i].pos2);
         }
         if (jsonData.length > 0) {
           add.count = jsonData[jsonData.length - 1].id;
@@ -329,9 +379,9 @@ xmlhttp.send();
   }
     ele.setAttribute("checked", "checked");
 
-function add(id, name, valDay, valNight, valAway, pos1, pos2) {
+function add(type, id, name, valDay, valNight, valAway, pos1, pos2) {
   add.count++;
-  if (id === undefined) {
+  if (id == null) {
     id = add.count;
     valDay = 50;
     valNight = 50;
@@ -339,7 +389,7 @@ function add(id, name, valDay, valNight, valAway, pos1, pos2) {
     pos1 = 0;
     pos2 = 0;
     name = "D" + add.count;
-    insert(id, name, valDay, valNight, valAway, pos1, pos2);
+    insert(id, name, valDay, valNight, valAway, type, pos1, pos2);
   }
 
   var con = document.createElement('div');
@@ -348,6 +398,12 @@ function add(id, name, valDay, valNight, valAway, pos1, pos2) {
   con.id = "D" + id;
   var leftDiv = document.getElementsByClassName("leftDiv")[0];
   leftDiv.appendChild(con);
+
+  var q = document.createTextNode(type);
+  con.appendChild(q);
+
+  var s = document.createTextNode('\u00A0\u00A0');
+  con.appendChild(s);
 
   con.style.color = "white";
   var m = document.createElement("INPUT");
@@ -359,7 +415,7 @@ function add(id, name, valDay, valNight, valAway, pos1, pos2) {
   t.innerHTML = "OK";
   t.onclick = function()  {
     name = m.value;
-    insert(id, name, valDay, valNight, valAway, null, null);
+    insert(id, name, valDay, valNight, valAway, type, null, null);
     location.reload();
   }
   con.appendChild(t);
@@ -383,7 +439,7 @@ function add(id, name, valDay, valNight, valAway, pos1, pos2) {
       valDay = x.value;
     }
     r.nodeValue = "    " + x.value + "   ";
-    insert(id, name, valDay, valNight, valAway);
+    insert(id, name, valDay, valNight, valAway, type);
   }
   con.appendChild(x);
 
@@ -396,7 +452,6 @@ function add(id, name, valDay, valNight, valAway, pos1, pos2) {
   }
   con.appendChild(r);
 
-
   var img_con = document.createElement('div');
   img_con.setAttribute("class", "right-div");
   img_con.style.width = "30px";
@@ -407,10 +462,16 @@ function add(id, name, valDay, valNight, valAway, pos1, pos2) {
   rightDiv.appendChild(img_con);
 
   var img = document.createElement('IMG');
-  img.setAttribute("src", "sensor-th.png");
+  if (type == "Light") {
+    img.setAttribute("src", "lightbulb.png");
+  } else if (type == "Curtain") {
+    img.setAttribute("src", "curtain.png");
+  } else if (type == "Thermostat") {
+    img.setAttribute("src", "thermostat.png");
+  }
   img.setAttribute("class", "img");
-  img.setAttribute("height", "30");
-  img.setAttribute("width", "30");
+  img.setAttribute("height", "40");
+  img.setAttribute("width", "40");
   img_con.appendChild(img);
 
   var p = document.createTextNode(name);
@@ -466,11 +527,11 @@ function add(id, name, valDay, valNight, valAway, pos1, pos2) {
       var rect = elmnt.getBoundingClientRect();
       var rightDiv = document.getElementsByClassName("rightDiv")[0];
       var divRect = rightDiv.getBoundingClientRect();
-      insert(id, null, null, null, null, rect.top - divRect.top, rect.left - divRect.left);
+      insert(id, null, null, null, null, null, rect.top - divRect.top, rect.left - divRect.left);
     }
 }
 
-function insert(d, n, valDay, valNight, valAway, p1, p2) {
+function insert(d, n, valDay, valNight, valAway, type, p1, p2) {
   $.post("savesettings.php",
   {
       id: d,
@@ -478,6 +539,7 @@ function insert(d, n, valDay, valNight, valAway, p1, p2) {
       amountDay: valDay,
       amountNight: valNight,
       amountAway: valAway,
+      type: type,
       pos1: p1,
       pos2: p2,
   },
@@ -508,6 +570,34 @@ function remove(val) {
     localStorage.setItem("config", "away");
     location.reload();
   }
+
+  function myFunction() {
+  document.getElementById("myDropdown").classList.toggle("show");
+}
+
+// Close the dropdown if the user clicks outside of it
+window.onclick = function(event) {
+  if (!event.target.matches('.dropbtn')) {
+    var dropdowns = document.getElementsByClassName("dropdown-content");
+    var i;
+    for (i = 0; i < dropdowns.length; i++) {
+      var openDropdown = dropdowns[i];
+      if (openDropdown.classList.contains('show')) {
+        openDropdown.classList.remove('show');
+      }
+    }
+  }
+}
+
+function addLight() {
+  add("Light", null, null, null, null, null, null, null);
+}
+function addCurtain() {
+  add("Curtain", null, null, null, null, null, null, null);
+}
+function addThermostat() {
+  add("Thermostat", null, null, null, null, null, null, null);
+}
 
 </script>
 
