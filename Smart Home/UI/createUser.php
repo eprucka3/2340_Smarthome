@@ -31,22 +31,12 @@ if (!$db_selected) {
       firstname VARCHAR(40) NOT NULL,
       lastname VARCHAR(40) NOT NULL
   )";
-  if(mysqli_query($link, $sql)){
-      echo "Table created successfully.";
-  } else{
-      echo "ERROR: Could not able to execute $sql. " . mysqli_error($link);
 
-}
 
 $sql = "INSERT INTO user (id,username,password,firstname,lastname)
 VALUES ('0', 'admin', 'admin', 'firstname', 'lastname')
 ON DUPLICATE KEY UPDATE id=id";
 
-if ($link->query($sql) === TRUE) {
-    echo "Page saved!";
-} else {
-    echo "Error: " . $sql . "<br>" . $link->error;
-}
 
 
 // Close connection

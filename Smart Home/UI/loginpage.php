@@ -1,6 +1,7 @@
 <?php
    ob_start();
    session_start();
+   include 'createUser.php';
 ?>
 
 
@@ -119,12 +120,6 @@
       </div>
 
       <script>
-      //Create database if not created
-      $.post(
-          "createUser.php",
-          function(data, status) {// success callback
-          						console.log('status: ' + status + ', data: ' + data);
-            });
 
             //Retrieve json data
             $.post(
