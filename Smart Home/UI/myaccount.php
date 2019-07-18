@@ -65,7 +65,8 @@
 <h1 class="center-div">Account Info</h1>
 
 
-<form class="center-div center_color">
+<form class="center-div center_color"
+  action="accountUpdate.php" method = "post">
   First name:<br>
   <input type="text" name="firstname" id = "firstname"
    placeholder = "<?php echo $log->getFirst()?>">
@@ -81,14 +82,7 @@
   Password:<br>
   <input type="text" name="password" id = "password"
    placeholder = "<?php echo $log->getPassword()?>">
-  <input type="submit" value = "Save" name="formSubmit"
-  onclick="<?php
-  $user = document.getElementById("username").value.toString();
-  $pass = document.getElementById("password").value.toString();
-  $first = document.getElementById("firstname").value.toString();
-  $last = document.getElementById("lastname").value.toString();
-  $log->setUser($first, $last, $user, $pass);
-  ?>">
+  <input type="submit" value = "Save" name="formSubmit">
 </form>
 
 

@@ -5,14 +5,6 @@ error_reporting(0);
 session_start();
 class logmein {
 
-  //table fields
-  var $user_table = 'user';
-  var $id_column = 'id';
-  var $user_column = 'username';
-  var $pass_column = 'password';
-  var $first_column = 'firstname';
-  var $last_column = 'lastname';
-
   //encryption
    var $encrypt = false;       //set to true to use md5 encryption for the password
 
@@ -52,23 +44,21 @@ class logmein {
        return $last;
    }
 
-   function setUsername($first) {
-     $conn = new mysqli("localhost", "root", "", "mydb"); // Create connection
-     $sql = "INSERT INTO user (id,username)
-     VALUES ('0', '$user') ON DUPLICATE KEY UPDATE
-     username='$user'";
-
-
-     if ($conn->query($sql) === TRUE) {
-         echo "Page saved!";
-     } else {
-         echo "Error: " . $sql . "<br>" . $conn->error;
-     }
-     return;
-   }
-
    function setUser($first, $last, $user, $pass) {
-        echo "hey";
+     if ($first == "") {
+       $first = $this->getFirst();
+     }
+     if ($last == "") {
+       $last = $this->getLast();
+     }
+     if ($user == "") {
+       $user = $this->getUsername();
+     }
+     if ($pass == "") {
+       $pass = $this->getPassword();
+     }
+
+
      $conn = new mysqli("localhost", "root", "", "mydb"); // Create connection
      $sql = "INSERT INTO user (id,username,password,firstname,lastname)
      VALUES ('0', '$user', '$pass', '$first', '$last') ON DUPLICATE KEY UPDATE
@@ -90,8 +80,6 @@ function checkUser($username, $password){
 
 
   //if username and password
-
-
        if ($user == $username &&
           $pass == $password) {
           return true;
@@ -101,11 +89,16 @@ function checkUser($username, $password){
 
 }
 
-function register($user_name, $user_password, $user_firstname, $user_lastname) {
-  //try {
-    //Hash Password
-  //  $user_hashed_password = password_hash($user_password, PASSWORD_DEFAULT);
-  //}
+function checkPassword($pass){
+  $length = strlen($pass);
+  for ($i=0; $i<$length; $i++) {
+     if (ctype_alpha($pass[$i])) {
+       return true;
+     } else {
+       return false;
+     }
+  }
+
 }
 
 function createUserDB() {
