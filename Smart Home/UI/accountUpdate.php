@@ -5,8 +5,6 @@
 if ($log->checkPassword($_POST['password'])) {
   $log->setUser($_POST["firstname"], $_POST["lastname"],
   $_POST["username"], $_POST['password']);
-} else {
-  die("Invalid Password");
 }
 ?>
 

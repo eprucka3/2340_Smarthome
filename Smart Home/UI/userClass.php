@@ -92,14 +92,29 @@ function checkPassword($pass){
 if ($pass == "") {
   $pass = $this->getPassword();
 }
+$count = 0;
   $length = strlen($pass);
   for ($i=0; $i<$length; $i++) {
-     if (ctype_alpha($pass[$i])) {
-       return true;
-     } else {
+     if ($pass[$i] == "~" ||
+     $pass[$i] == " " ||
+     $pass[$i] == "!" ||
+     $pass[$i] == "@" ||
+     $pass[$i] == "#") {
+     die("Password can't contain ~ !@#");
        return false;
+     } else {
+       if (ctype_upper($pass[$i])) {
+         $count++;
+       }
      }
   }
+
+  if ($count < 1) {
+    die("Password must have a capital letter");
+    return false;
+  }
+
+  return true;
 
 }
 
