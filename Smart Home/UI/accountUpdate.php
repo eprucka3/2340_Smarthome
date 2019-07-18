@@ -2,9 +2,12 @@
    include("userClass.php");
    $log = new logmein();
    $log->createUserDB();
-if ($log->checkPassword($_POST['password'])) {
+   $passCheck = $log->checkPassword($_POST['password']);
+if ($passCheck == true) {
   $log->setUser($_POST["firstname"], $_POST["lastname"],
   $_POST["username"], $_POST['password']);
+} else {
+  die("Password can't contain ~!@ #, and must contain a capital letter");
 }
 ?>
 

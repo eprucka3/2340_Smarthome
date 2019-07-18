@@ -100,7 +100,6 @@ $count = 0;
      $pass[$i] == "!" ||
      $pass[$i] == "@" ||
      $pass[$i] == "#") {
-     die("Password can't contain ~ !@#");
        return false;
      } else {
        if (ctype_upper($pass[$i])) {
@@ -110,7 +109,6 @@ $count = 0;
   }
 
   if ($count < 1) {
-    die("Password must have a capital letter");
     return false;
   }
 
