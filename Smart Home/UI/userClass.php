@@ -66,7 +66,6 @@ class logmein {
 
 
      if ($conn->query($sql) === TRUE) {
-         echo "Page saved!";
      } else {
          echo "Error: " . $sql . "<br>" . $conn->error;
      }
@@ -90,6 +89,9 @@ function checkUser($username, $password){
 }
 
 function checkPassword($pass){
+if ($pass == "") {
+  $pass = $this->getPassword();
+}
   $length = strlen($pass);
   for ($i=0; $i<$length; $i++) {
      if (ctype_alpha($pass[$i])) {
