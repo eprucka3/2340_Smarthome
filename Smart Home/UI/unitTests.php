@@ -6,17 +6,24 @@ class TestOfLogging extends UnitTestCase {
   function testCorrectPass() {
     $log = new logmein();
     $log->createUserDB();
-    $this->assertTrue($log->checkPassword("Hello"));
+    $this->assertEqual($log->checkPassword("Hello"), 0);
   }
-    function testLowercasePass() {
-      $log = new logmein();
-      $log->createUserDB();
-      $this->assertFalse($log->checkPassword("hello"));
-    }
-      function testSpecialChar() {
-        $log = new logmein();
-        $log->createUserDB();
-        $this->assertFalse($log->checkPassword("#ello"));
-      }
+  function testLowercasePass() {
+    $log = new logmein();
+    $log->createUserDB();
+    $this->assertEqual($log->checkPassword("hello"), 1);
+  }
+
+  function testSpecialandUpperChar() {
+    $log = new logmein();
+    $log->createUserDB();
+    $this->assertEqual($log->checkPassword("#Ello"), 2);
+  }
+
+  function testSpecialChar() {
+    $log = new logmein();
+    $log->createUserDB();
+    $this->assertEqual($log->checkPassword("#ello"), 3);
+  }
 }
 ?>

@@ -92,27 +92,34 @@ function checkPassword($pass){
 if ($pass == "") {
   $pass = $this->getPassword();
 }
-$count = 0;
+$countSymbols = 0;
+$countCapitals = 0;
   $length = strlen($pass);
   for ($i=0; $i<$length; $i++) {
-     if ($pass[$i] == "~" ||
-     $pass[$i] == " " ||
-     $pass[$i] == "!" ||
-     $pass[$i] == "@" ||
-     $pass[$i] == "#") {
-       return false;
-     } else {
-       if (ctype_upper($pass[$i])) {
-         $count++;
-       }
-     }
+    if ($pass[$i] == "~" ||
+        $pass[$i] == " " ||
+        $pass[$i] == "!" ||
+        $pass[$i] == "@" ||
+        $pass[$i] == "#" ||
+        $pass[$i] == "$" ||
+        $pass[$i] == "%" ||
+        $pass[$i] == "&") {
+            $countSymbols++;
+    }
+    if (ctype_upper($pass[$i])) {
+         $countCapitals++;
+    }
   }
 
-  if ($count < 1) {
-    return false;
+  if ($countSymbols > 0 && $countCapitals == 0) {
+      return 3;
+  } else if ($countSymbols > 0) {
+      return 2;
+  } else if ($countCapitals == 0) {
+      return 1;
+  } else {
+      return 0;
   }
-
-  return true;
 
 }
 
