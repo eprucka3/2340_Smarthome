@@ -272,63 +272,6 @@ div {
 
 .show {display: block;}
 
-.switch1 {
-  position: relative;
-  display: inline-block;
-  width: 30px;
-  height: 17px;
-}
-
-.switch1 input {
-  opacity: 0;
-  width: 0;
-  height: 0;
-}
-
-.slider1 {
-  position: absolute;
-  cursor: pointer;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: #ccc;
-  -webkit-transition: .4s;
-  transition: .4s;
-  border-radius: 17px;
-}
-
-.slider1:before {
-  position: absolute;
-  content: "";
-  height: 13px;
-  width: 13px;
-  left: 2px;
-  bottom: 2px;
-  background-color: white;
-  -webkit-transition: .4s;
-  transition: .4s;
-  border-radius: 50%;
-}
-
-input:checked + .slider1 {
-  background-color: #2196F3;
-}
-
-input:focus + .slider1 {
-  box-shadow: 0 0 1px #2196F3;
-}
-
-input:checked + .slider1:before {
-  -webkit-transform: translateX(13px);
-  -ms-transform: translateX(13px);
-  transform: translateX(13px);}
-
-<label class="switch1">
-  <input type="checkbox">
-  <span class="slider1 round"></span>
-</label>
-
 </style>
 </head>
 <body>
@@ -403,6 +346,7 @@ xmlhttp.onreadystatechange = function() {
           add(jsonData[i].type, jsonData[i].id, jsonData[i].name,
             jsonData[i].amountDay,
               jsonData[i].amountNight, jsonData[i].amountAway,
+              jsonData[i].enabled,
              jsonData[i].pos1, jsonData[i].pos2);
         }
         if (jsonData.length > 0) {
@@ -425,7 +369,7 @@ xmlhttp.send();
   }
     ele.setAttribute("checked", "checked");
 
-function add(type, id, name, valDay, valNight, valAway, pos1, pos2) {
+function add(type, id, name, valDay, valNight, valAway, enabled, pos1, pos2) {
   add.count++;
   if (id == null) {
     id = add.count;
@@ -435,7 +379,8 @@ function add(type, id, name, valDay, valNight, valAway, pos1, pos2) {
     pos1 = 0;
     pos2 = 0;
     name = "D" + add.count;
-    insert(id, name, valDay, valNight, valAway, type, pos1, pos2);
+    enabled = 1;
+    insert(id, name, valDay, valNight, valAway, type, enabled, pos1, pos2);
   }
 
   var con = document.createElement('div');
@@ -461,7 +406,7 @@ function add(type, id, name, valDay, valNight, valAway, pos1, pos2) {
   t.innerHTML = "OK";
   t.onclick = function()  {
     name = m.value;
-    insert(id, name, valDay, valNight, valAway, type, null, null);
+    insert(id, name, valDay, valNight, valAway, type, enabled);
     location.reload();
   }
   con.appendChild(t);
@@ -485,7 +430,7 @@ function add(type, id, name, valDay, valNight, valAway, pos1, pos2) {
       valDay = x.value;
     }
     r.nodeValue = "    " + x.value + "   ";
-    insert(id, name, valDay, valNight, valAway, type);
+    insert(id, name, valDay, valNight, valAway, type, enabled);
   }
   con.appendChild(x);
 
@@ -536,7 +481,24 @@ function add(type, id, name, valDay, valNight, valAway, pos1, pos2) {
     remove(id);
   }
   con.appendChild(y);
+
+  var z = document.createElement("INPUT");
+  z.setAttribute("type", "checkbox");
+  if (enabled == 1) {
+    z.checked = true;
+  }
+  z.onclick = function() {
+    enabled = 0;
+    insert(id, name, valDay, valNight, valAway, type, enabled);
+    z.checked = false;
+  }
+
+  con.appendChild(z);
+
+  var q = document.createTextNode("Enabled");
+  con.appendChild(q);
 }
+
 
   function dragElement(elmnt, id) {
     var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
@@ -573,11 +535,11 @@ function add(type, id, name, valDay, valNight, valAway, pos1, pos2) {
       var rect = elmnt.getBoundingClientRect();
       var rightDiv = document.getElementsByClassName("rightDiv")[0];
       var divRect = rightDiv.getBoundingClientRect();
-      insert(id, null, null, null, null, null, rect.top - divRect.top, rect.left - divRect.left);
+      insert(id, null, null, null, null, null, null, rect.top - divRect.top, rect.left - divRect.left);
     }
 }
 
-function insert(d, n, valDay, valNight, valAway, type, p1, p2) {
+function insert(d, n, valDay, valNight, valAway, type, enabled, p1, p2) {
   $.post("savesettings.php",
   {
       id: d,
@@ -586,6 +548,7 @@ function insert(d, n, valDay, valNight, valAway, type, p1, p2) {
       amountNight: valNight,
       amountAway: valAway,
       type: type,
+      enabled: enabled,
       pos1: p1,
       pos2: p2,
   },
@@ -636,13 +599,13 @@ window.onclick = function(event) {
 }
 
 function addLight() {
-  add("Light", null, null, null, null, null, null, null);
+  add("Light");
 }
 function addCurtain() {
-  add("Curtain", null, null, null, null, null, null, null);
+  add("Curtain");
 }
 function addThermostat() {
-  add("Thermostat", null, null, null, null, null, null, null);
+  add("Thermostat");
 }
 
 </script>
