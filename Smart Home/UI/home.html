@@ -488,9 +488,14 @@ function add(type, id, name, valDay, valNight, valAway, enabled, pos1, pos2) {
     z.checked = true;
   }
   z.onclick = function() {
-    enabled = 0;
+    if (enabled == 1) {
+      enabled = 0;
+      z.checked = false;
+    } else {
+      enabled = 1;
+      z.checked = true;
+    }
     insert(id, name, valDay, valNight, valAway, type, enabled);
-    z.checked = false;
   }
 
   con.appendChild(z);
